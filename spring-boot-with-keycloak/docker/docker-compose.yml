@@ -1,0 +1,8 @@
+ersion: "3.7"
+
+# https://docs.docker.com/compose/compose-file/
+# DOCKER_DB_DIR is defined in .env file (see comments there).
+
+services:
+  db-crpm-server:
+    image: keycloak-inner-auth:latest

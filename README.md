@@ -1,5 +1,9 @@
 # spring-boot-with-keycloak
 
+cd docker
+docker build --tag=keycloak-inner-auth:latest .
+
+
 ### Downloading and Installing Keycloak:
 There're several distributions to choose from `https://www.keycloak.org/downloads.html`.
 However, in this tutorial, we'll be using the standalone version.
