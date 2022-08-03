@@ -1,9 +1,4 @@
-FROM tomcat:8.0-alpine
-
-LABEL maintainer="deepak@softwareyoga.com"
-
-ADD https://github.com/nulay/keycloack-test/blob/inner-registration/spring-boot-with-keycloak/war/keycloak.war?raw=true /usr/local/tomcat/webapps/
-
-EXPOSE 8080
-
-CMD ["catalina.sh", "run"]
+FROM openjdk:8-jdk-alpine
+ARG JAR_FILE=../target/*.jar
+COPY ${JAR_FILE} keycloak-1.0.jar
+ENTRYPOINT ["java","-jar","/keycloak-1.0.jar"]
