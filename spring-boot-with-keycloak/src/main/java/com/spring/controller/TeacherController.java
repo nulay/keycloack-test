@@ -13,6 +13,7 @@ import com.spring.dto.TeacherDTO;
 import com.spring.service.TeacherService;
 
 @Controller
+@RequestMapping("/teacher")
 public class TeacherController {
 	
 	@Autowired

@@ -23,8 +23,8 @@
                 <td th:text="${value.studentName}"></td>
                  <td th:text="${value.studentRoll}">roll</td>
                 <td th:text="${value.email}">Email</td>               
-              <td><a th:href="${'/student/edit/'+value.studentID}" class="btn btn-default">Edit</a></td>
-                <td><a th:href="${'/student/delete/'+value.studentID}" class="btn btn-danger">Delete</a></td> 
+              <td><a th:href="${'/student/student/edit/'+value.studentID}" class="btn btn-default">Edit</a></td>
+                <td><a th:href="${'/student/student/delete/'+value.studentID}" class="btn btn-danger">Delete</a></td>
             </tr>
         </table>
     </div>

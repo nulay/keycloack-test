@@ -48,8 +48,7 @@ public class TeacherService {
 
 	public TeacherDTO findByTeacherID(Long teacherID) {
 		TeacherDTO teacherDTO=new TeacherDTO();
-		TeacherEntity entity=new TeacherEntity();
-		entity=teacherRepo.findOne(teacherID);
+		TeacherEntity entity=teacherRepo.getById(teacherID);
 		BeanUtils.copyProperties(entity, teacherDTO);
 		
 		
@@ -57,7 +56,7 @@ public class TeacherService {
 	}
 
 	public void deleteTeacher(TeacherDTO teacherDTO) {
-		teacherRepo.delete(teacherDTO.getTeacherID());
+		teacherRepo.deleteById(teacherDTO.getTeacherID());
 		
 	}
 	

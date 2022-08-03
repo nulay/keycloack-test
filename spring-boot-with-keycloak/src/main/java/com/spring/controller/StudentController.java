@@ -6,6 +6,8 @@ import java.security.Principal;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,16 +20,12 @@ import com.spring.dto.StudentDTO;
 import com.spring.service.StudentService;
 
 @Controller
+@RequestMapping("/student")
 public class StudentController {
 
 	@Autowired
 	StudentService studentService;
 
-	@GetMapping(path = "/logout")
-	public String logout(HttpServletRequest request) throws ServletException {
-		request.logout();
-		return "redirect:/home";
-	}
 
 	@RequestMapping(path = "/saveStudent", method = RequestMethod.POST)
 	public String saveStudent(StudentDTO studentDTO) {
@@ -38,7 +36,9 @@ public class StudentController {
 	@RequestMapping(path = "/home", method = RequestMethod.GET)
 	public String test(Principal principal, Model model) {
 		model.addAttribute("studentDTO", new StudentDTO());
-		model.addAttribute("username", principal.getName());
+		if(principal !=null) {
+			model.addAttribute("username", principal.getName());
+		}
 		return "home";
 	}
 

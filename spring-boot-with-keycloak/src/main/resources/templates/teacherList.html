@@ -23,8 +23,8 @@
                 <td th:text="${teacher.teacherName}"></td>
                  <td th:text="${teacher.teacherRoll}">roll</td>
                 <td th:text="${teacher.email}">Email</td>               
-			 <td><a th:href="${'/teacher/edit/'+teacher.teacherID}" class="btn btn-default">Edit</a></td>
-       		 <td><a th:href="${'/teacher/delete/'+teacher.teacherID}" class="btn btn-danger">Delete</a></td>
+			 <td><a th:href="${'/teacher/teacher/edit/'+teacher.teacherID}" class="btn btn-default">Edit</a></td>
+       		 <td><a th:href="${'/teacher/teacher/delete/'+teacher.teacherID}" class="btn btn-danger">Delete</a></td>
             </tr>
         </table>
     </div>

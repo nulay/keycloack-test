@@ -48,14 +48,13 @@ public class StudentService {
 	
 	public StudentDTO findByStudentID(Long studentID) {
 		StudentDTO studentDTO=new StudentDTO();
-		StudentEntity student=new StudentEntity();
-		student=studentRepo.findOne(studentID);
+		StudentEntity student = studentRepo.getById(studentID);
 		BeanUtils.copyProperties(student, studentDTO);
 		return studentDTO;	
 		}
 	
 	public void deleteStudent(StudentDTO studentDTO) {
-		studentRepo.delete(studentDTO.getStudentID());		
+		studentRepo.deleteById(studentDTO.getStudentID());
 	}
 
 
