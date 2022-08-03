@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -30,6 +31,13 @@ public class KeycloakWebService {
 
     @SneakyThrows
     private Connection.Response executeLogin(Map<String, String> cookies, String url) {
+        Map headerMap = new HashMap();
+        headerMap.put("Content-Type", "application/x-www-form-urlencoded");
+        headerMap.put("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8," +
+                "application/signed-exchange;v=b3;q=0.9");
+        headerMap.put("Content-Length", "42");
+        headerMap.put("Connection", "keep-alive");
+
         Connection connection = Jsoup.connect(url)
                 .ignoreHttpErrors(true)
                 .cookies(cookies)
@@ -38,11 +46,7 @@ public class KeycloakWebService {
                 .data("password", keycloakProperties.getPassword())
                 .userAgent("Mozilla")
                 .method(Connection.Method.POST)
-                .headers(Map.of("Content-Type", "application/x-www-form-urlencoded",
-                        "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8," +
-                                "application/signed-exchange;v=b3;q=0.9",
-                        "Content-Length", "42",
-                        "Connection", "keep-alive"));
+                .headers(headerMap);
 
         Connection.Response loginForm = null;
         try {
