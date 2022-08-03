@@ -1,9 +1,0 @@
-FROM tomcat:8.0-alpine
-
-LABEL maintainer="deepak@softwareyoga.com"
-
-ADD https://github.com/nulay/keycloack-test/blob/inner-registration/spring-boot-with-keycloak/war/keycloak.war?raw=true /usr/local/tomcat/webapps/
-
-EXPOSE 8080
-
-CMD ["catalina.sh", "run"]
