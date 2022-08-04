@@ -2,6 +2,7 @@ package com.spring.service;
 
 import com.spring.configuration.KeycloakProperties;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class KeycloakWebService {
 
     @Autowired
@@ -21,12 +23,22 @@ public class KeycloakWebService {
     @SneakyThrows
     public Connection.Response keycloakReg() {
         Connection connection = getAuthKeycloakForm();
-        Connection.Response response = connection.execute();
-        Element el = response.parse().getElementById("kc-form-login");
-        Map<String, String> cookies = response.cookies();
-        String urlLoginForm = el.attr("action");
-        Connection.Response logF = executeLogin(cookies, urlLoginForm);
-        return logF;
+        Connection.Response response = null;
+        try {
+            response = connection.execute();
+            Element el = response.parse().getElementById("kc-form-login");
+            Map<String, String> cookies = response.cookies();
+            String urlLoginForm = el.attr("action");
+
+            response = executeLogin(cookies, urlLoginForm);
+        } catch (IOException exception) {
+            log.error("Connection refused to: {}", response.url().getHost() +
+                            ((-1 != response.url().getPort()) ? ":" + response.url().getPort() : "") +
+                            response.url().getPath(),
+                    exception);
+            throw exception;
+        }
+        return response;
     }
 
     @SneakyThrows
