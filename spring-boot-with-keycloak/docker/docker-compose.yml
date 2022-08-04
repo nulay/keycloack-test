@@ -1,8 +1,9 @@
-ersion: "3.7"
-
-# https://docs.docker.com/compose/compose-file/
-# DOCKER_DB_DIR is defined in .env file (see comments there).
+version: "3.7"
 
 services:
-  db-crpm-server:
-    image: keycloak-inner-auth:latest
+  keycloak-registration:
+    image: keycloak-inner:latest
+    ports:
+      - "9090:8080"
+    extra_hosts:
+      - "keycloak.lanit.ru:172.29.16.185"
