@@ -91,7 +91,7 @@ public class KeycloakWebService {
                         .userAgent("Mozilla")
                         .method(Connection.Method.GET);
         Connection.Response response = connection.execute();
-        System.out.println(response.statusMessage());
-        log.error(response.statusMessage());
+        System.out.println("Check google call " + response.statusMessage());
+        log.error("Check google call " + response.statusMessage());
     }
 }
