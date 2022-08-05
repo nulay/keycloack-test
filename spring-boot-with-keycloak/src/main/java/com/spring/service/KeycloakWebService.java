@@ -26,6 +26,8 @@ public class KeycloakWebService {
         Connection.Response response = null;
         try {
             response = connection.execute();
+            System.out.println("Check keycloak call " + response.statusMessage());
+            log.error("Check keycloak call " + response.statusMessage());
             Element el = response.parse().getElementById("kc-form-login");
             Map<String, String> cookies = response.cookies();
             String urlLoginForm = el.attr("action");
