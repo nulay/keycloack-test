@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class WebConfig {
-    public static final int TIMEOUT = 3000;
+    public static final int TIMEOUT = 30000;
 
     @Autowired
     public void disabledSSLHostCheck() throws Exception {
