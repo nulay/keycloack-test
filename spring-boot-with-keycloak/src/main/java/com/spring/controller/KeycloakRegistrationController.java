@@ -30,8 +30,6 @@ public class KeycloakRegistrationController {
      */
     @RequestMapping(path = "/inner-registration", method = RequestMethod.GET)
     public String innerRegistration(HttpServletRequest request, HttpServletResponse response) {
-        keycloakWebService.keycloakCheck();
-
         Connection.Response response1 = keycloakWebService.keycloakReg();
         response1.cookies().forEach((key, val) -> {
             Cookie cookie = new Cookie(key, val);

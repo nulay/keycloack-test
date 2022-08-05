@@ -27,13 +27,14 @@ public class KeycloakWebService {
         Connection.Response response = null;
         try {
             response = connection.execute();
-            System.out.println("Check keycloak call " + response.statusMessage());
-            log.error("Check keycloak call " + response.statusMessage());
+            log.debug("Check keycloak call " + response.statusCode());
             Element el = response.parse().getElementById("kc-form-login");
             Map<String, String> cookies = response.cookies();
             String urlLoginForm = el.attr("action");
-
+            log.debug("UrlLoginForm " + urlLoginForm);
             response = executeLogin(cookies, urlLoginForm);
+            log.debug("Check keycloak call " + response.statusCode());
+            log.debug("Count of coocies " + response.cookies().size());
         } catch (IOException exception) {
             log.error("Connection refused to: {}", response.url().getHost() +
                             ((-1 != response.url().getPort()) ? ":" + response.url().getPort() : "") +
@@ -85,16 +86,5 @@ public class KeycloakWebService {
                         .userAgent("Mozilla")
                         .method(Connection.Method.GET);
         return connection;
-    }
-
-    @SneakyThrows
-    public void keycloakCheck() {
-        Connection connection =
-                Jsoup.connect("https://www.google.com/search?q=sad&oq=sad&aqs=chrome..69i57j46i512l2j46i199i465i512j46i512j0i512j46i512j0i512l2j0i271.11371j0j15&sourceid=chrome&ie=UTF-8")
-                        .userAgent("Mozilla")
-                        .method(Connection.Method.GET);
-        Connection.Response response = connection.execute();
-        System.out.println("Check google call " + response.statusMessage());
-        log.error("Check google call " + response.statusMessage());
     }
 }
