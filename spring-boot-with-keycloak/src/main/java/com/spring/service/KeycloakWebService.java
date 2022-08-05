@@ -34,7 +34,7 @@ public class KeycloakWebService {
             log.debug("UrlLoginForm " + urlLoginForm);
             response = executeLogin(cookies, urlLoginForm);
             log.debug("Check keycloak call " + response.statusCode());
-            log.debug("Count of coocies " + response.cookies().size());
+            log.debug("Count of cookies " + response.cookies().size());
         } catch (IOException exception) {
             log.error("Connection refused to: {}", response.url().getHost() +
                             ((-1 != response.url().getPort()) ? ":" + response.url().getPort() : "") +
@@ -68,7 +68,7 @@ public class KeycloakWebService {
         try {
             loginForm = connection.execute();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            log.error("Connection refused to: {}", url, exception);
         }
         return loginForm;
     }
