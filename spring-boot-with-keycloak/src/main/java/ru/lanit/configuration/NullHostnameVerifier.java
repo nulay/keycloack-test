@@ -1,4 +1,4 @@
-package com.spring.configuration;
+package ru.lanit.configuration;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;

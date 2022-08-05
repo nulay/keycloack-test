@@ -1,4 +1,4 @@
-package com.spring.configuration;
+package ru.lanit.configuration;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

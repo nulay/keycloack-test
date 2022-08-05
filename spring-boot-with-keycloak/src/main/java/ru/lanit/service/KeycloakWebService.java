@@ -1,6 +1,6 @@
-package com.spring.service;
+package ru.lanit.service;
 
-import com.spring.configuration.KeycloakProperties;
+import ru.lanit.configuration.KeycloakProperties;
 import lombok.SneakyThrows;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;

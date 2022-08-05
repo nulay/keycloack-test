@@ -1,7 +1,7 @@
-package com.spring.controller;
+package ru.lanit.controller;
 
-import com.spring.configuration.KeycloakProperties;
-import com.spring.service.KeycloakWebService;
+import ru.lanit.configuration.KeycloakProperties;
+import ru.lanit.service.KeycloakWebService;
 import org.jsoup.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

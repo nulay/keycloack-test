@@ -1,4 +1,4 @@
-package com.spring.configuration;
+package ru.lanit.configuration;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;
