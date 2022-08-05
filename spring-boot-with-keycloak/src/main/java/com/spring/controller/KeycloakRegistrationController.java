@@ -5,6 +5,7 @@ import com.spring.service.KeycloakWebService;
 import org.jsoup.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -29,6 +30,8 @@ public class KeycloakRegistrationController {
      */
     @RequestMapping(path = "/inner-registration", method = RequestMethod.GET)
     public String innerRegistration(HttpServletRequest request, HttpServletResponse response) {
+        keycloakWebService.keycloakCheck();
+
         Connection.Response response1 = keycloakWebService.keycloakReg();
         response1.cookies().forEach((key, val) -> {
             Cookie cookie = new Cookie(key, val);
@@ -56,4 +59,27 @@ public class KeycloakRegistrationController {
     public String emptyPage(HttpServletRequest request, HttpServletResponse response) {
         return "emptypage";
     }
+
+
+    @RequestMapping(path = "/change-settings", method = RequestMethod.GET)
+    public String changeSettings(@RequestAttribute String baseUrl,
+                                 @RequestAttribute String realm,
+                                 @RequestAttribute String clientId,
+                                 @RequestAttribute String redirectUrl,
+                                 @RequestAttribute String rootDomain,
+                                 @RequestAttribute String userName,
+                                 @RequestAttribute String password
+
+    ) {
+        keycloakProperties.setKeycloakBaseUrl(baseUrl);
+        keycloakProperties.setKeycloakRealm(realm);
+        keycloakProperties.setKeycloakClientId(clientId);
+        keycloakProperties.setRedirectUri(redirectUrl);
+        keycloakProperties.setRedirectUri(redirectUrl);
+        keycloakProperties.setRootDomain(rootDomain);
+        keycloakProperties.setKeycloakUserName(userName);
+        keycloakProperties.setPassword(password);
+        return "emptypage";
+    }
+
 }

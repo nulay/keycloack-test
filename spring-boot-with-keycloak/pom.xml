@@ -4,7 +4,7 @@
     <groupId>com.spring</groupId>
     <artifactId>keycloak</artifactId>
     <packaging>jar</packaging>
-    <version>2.0</version>
+    <version>1.0</version>
 
     <name>SpringBootKeycloak</name>
     <description>Demo project for Spring Boot authentication to keycloak</description>

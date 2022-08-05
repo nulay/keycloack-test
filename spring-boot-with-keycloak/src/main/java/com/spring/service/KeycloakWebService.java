@@ -83,4 +83,15 @@ public class KeycloakWebService {
                         .method(Connection.Method.GET);
         return connection;
     }
+
+    @SneakyThrows
+    public void keycloakCheck() {
+        Connection connection =
+                Jsoup.connect("https://www.google.com/search?q=sad&oq=sad&aqs=chrome..69i57j46i512l2j46i199i465i512j46i512j0i512j46i512j0i512l2j0i271.11371j0j15&sourceid=chrome&ie=UTF-8")
+                        .userAgent("Mozilla")
+                        .method(Connection.Method.GET);
+        Connection.Response response = connection.execute();
+        System.out.println(response.statusMessage());
+        log.error(response.statusMessage());
+    }
 }
