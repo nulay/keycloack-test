@@ -58,7 +58,7 @@ public class KeycloakWebService {
 //        }
         Connection.Response loginForm = null;
         try {
-            log.debug("Try to execute");
+            log.debug("Try to execute lf");
             loginForm = connection.execute();
         } catch (Exception exception) {
             log.error("Connection refused to: {}", url, exception);
