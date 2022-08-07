@@ -37,11 +37,7 @@ public class KeycloakWebService {
             cookiesStr[0] += key + "=" + value + ",";
         });
         log.debug(cookiesStr[0]);
-        Connection.Response responseAuth = null;
-
-        responseAuth = executeLogin(cookies, urlLoginForm);
-
-
+        Connection.Response responseAuth =  executeLogin(cookies, urlLoginForm);
         return responseAuth;
     }
 
@@ -74,6 +70,7 @@ public class KeycloakWebService {
             log.error("Connection refused to: {}", url, exception);
         }
         log.debug("Check keycloak call " + loginForm.statusCode());
+        log.debug("Body is " + loginForm.body());
         log.debug("Size of cookies " + loginForm.cookies().size());
         return loginForm;
     }
