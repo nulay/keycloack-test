@@ -89,7 +89,7 @@ public class KeycloakWebService {
                 Jsoup.connect(keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() + keycloakProperties.getPathWithReplace())
                         .data("response_type", keycloakProperties.getKeycloakResponseType())
                         .data("client_id", keycloakProperties.getKeycloakClientId())
-                        .data("redirect_uri", URLEncoder.encode(keycloakProperties.getRedirectUri(), "UTF-8"))
+                        .data("redirect_uri", keycloakProperties.getRedirectUri())
                         .data("state", keycloakProperties.getKeycloakState())
                         .data("login", keycloakProperties.getIsKeycloakLogin())
                         .data("scope", keycloakProperties.getKeycloakScope())
