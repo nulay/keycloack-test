@@ -66,7 +66,7 @@ public class KeycloakWebService {
         Connection.Response loginForm = null;
         try {
             loginForm = connection.execute();
-        } catch (IOException exception) {
+        } catch (Exception exception) {
             log.error("Connection refused to: {}", url, exception);
         }
         log.debug("Check keycloak call " + loginForm.statusCode());
