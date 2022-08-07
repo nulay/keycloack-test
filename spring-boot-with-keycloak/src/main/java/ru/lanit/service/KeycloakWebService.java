@@ -53,6 +53,7 @@ public class KeycloakWebService {
                 .data("password", keycloakProperties.getPassword())
                 .userAgent(DEFAULT_UA)
                 .method(Connection.Method.POST)
+                .followRedirects(true)
                 .headers(headers);
 //        for (NameValuePair param : params) {
 //            connection = connection.data(param.getName(), param.getValue());
@@ -85,7 +86,7 @@ public class KeycloakWebService {
     // Open auth keycloak form
     @SneakyThrows
     private Connection.Response getAuthKeycloakForm() {
-        log.debug("Try to connect: {}" + keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() +
+        log.debug("Try to connect: {}", keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() +
                 keycloakProperties.getPathWithReplace());
         Connection connection =
                 Jsoup.connect(keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() + keycloakProperties.getPathWithReplace())
@@ -97,6 +98,7 @@ public class KeycloakWebService {
                         .data("scope", keycloakProperties.getKeycloakScope())
                         .userAgent(DEFAULT_UA)
                         .method(Connection.Method.GET);
+
         Connection.Response response = null;
         try {
             response = connection.execute();
