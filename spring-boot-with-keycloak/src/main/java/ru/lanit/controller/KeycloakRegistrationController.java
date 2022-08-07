@@ -4,7 +4,6 @@ import io.micrometer.core.instrument.util.StringUtils;
 import org.jsoup.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,22 +32,22 @@ public class KeycloakRegistrationController {
      * @return emptypage - просто чтобы что-то было
      */
     @RequestMapping(path = "/inner-registration", method = RequestMethod.GET)
-    public String innerRegistration(HttpServletRequest request, HttpServletResponse response, BindingResult result) {
+    public String innerRegistration(HttpServletRequest request, HttpServletResponse response) {
         Connection.Response response1 = null;
         try {
             response1 = keycloakWebService.keycloakReg();
         } catch (Exception e) {
             ObjectError message = new ObjectError("globalError", e.getMessage());
-            result.addError(message);
+
         }
-        if(response1 !=null) {
+        if (response1 != null) {
             response1.cookies().forEach((key, val) -> {
                 Cookie cookie = new Cookie(key, val);
                 cookie.setDomain(keycloakProperties.getRootDomain());
                 response.addCookie(cookie);
             });
             return "emptypage";
-        }else{
+        } else {
             return "error";
         }
     }

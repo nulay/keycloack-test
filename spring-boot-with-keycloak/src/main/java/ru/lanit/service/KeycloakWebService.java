@@ -1,12 +1,6 @@
 package ru.lanit.service;
 
 import lombok.SneakyThrows;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.message.BasicHeader;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
@@ -16,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.lanit.configuration.KeycloakProperties;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +25,8 @@ public class KeycloakWebService {
     @SneakyThrows
     public Connection.Response keycloakReg() {
         Connection.Response response = getAuthKeycloakForm();
+        log.debug(response.body());
+        log.debug(response.headers().toString());
         Element el = response.parse().getElementById("kc-form-login");
         Map<String, String> cookies = response.cookies();
         String urlLoginForm = el.attr("action");
@@ -52,7 +47,6 @@ public class KeycloakWebService {
 //        List<NameValuePair> params = URLEncodedUtils.parse(aURL, Charset.forName("UTF-8"));
         log.debug("Try to connect: {}", url);
         Connection connection = Jsoup.connect(url)
-                .proxy("localhost", 8888)
                 .cookies(cookies)
                 .data("credentialId", "")
                 .data("username", keycloakProperties.getKeycloakUserName())
@@ -65,32 +59,13 @@ public class KeycloakWebService {
 //        }
         Connection.Response loginForm = null;
         try {
-            log.debug("Try to execute lf");
+            log.debug("Try to execute loginForm");
             loginForm = connection.execute();
+            log.debug(loginForm.body());
+            log.debug(loginForm.headers().toString());
+            logDebugCookies(loginForm.cookies());
         } catch (Exception exception) {
             log.error("Connection refused to: {}", url, exception);
-            try {
-                DefaultHttpClient httpclient = new DefaultHttpClient();
-                MyRedirectHandler handler = new MyRedirectHandler();
-                httpclient.setRedirectStrategy(handler);
-                CookieStore cookieStore = new BasicCookieStore();
-                cookies.forEach((key, value) -> cookieStore.addCookie(new BasicClientCookie(key, value)));
-                httpclient.setCookieStore(cookieStore);
-
-                HttpPost post = new HttpPost(url);
-                headers.forEach((key, value) -> post.addHeader(new BasicHeader(key, value)));
-                log.debug("Start execute httpclient: {}");
-                httpclient.execute(post);
-
-                String lastUrl = url;
-                if (handler.lastRedirectedUri != null) {
-                    lastUrl = handler.lastRedirectedUri.toString();
-                }
-                log.debug("lastUrl {}", lastUrl);
-            } catch (IOException e) {
-                log.error("DefaultHttpClient error ", exception);
-                throw exception;
-            }
             throw exception;
         }
         log.debug("Size of cookies {}", loginForm.cookies().size());
@@ -110,7 +85,6 @@ public class KeycloakWebService {
     // Open auth keycloak form
     @SneakyThrows
     private Connection.Response getAuthKeycloakForm() {
-        Map headers = prepaireHeaderToLoginFormRequest();
         log.debug("Try to connect: {}" + keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() +
                 keycloakProperties.getPathWithReplace());
         Connection connection =
@@ -122,8 +96,7 @@ public class KeycloakWebService {
                         .data("login", keycloakProperties.getIsKeycloakLogin())
                         .data("scope", keycloakProperties.getKeycloakScope())
                         .userAgent(DEFAULT_UA)
-                        .method(Connection.Method.GET)
-                        .headers(headers);
+                        .method(Connection.Method.GET);
         Connection.Response response = null;
         try {
             response = connection.execute();
