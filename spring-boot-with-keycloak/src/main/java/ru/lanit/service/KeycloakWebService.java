@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.lanit.configuration.KeycloakProperties;
 
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class KeycloakWebService {
 //
 //        List<NameValuePair> params = URLEncodedUtils.parse(aURL, Charset.forName("UTF-8"));
         log.debug("Try to connect: {}", url);
-        Connection connection = Jsoup.connect(url)
+        Connection connection = Jsoup.connect(URLEncoder.encode(url, "UTF-8"))
                 .cookies(cookies)
                 .data("credentialId", "")
                 .data("username", keycloakProperties.getKeycloakUserName())
