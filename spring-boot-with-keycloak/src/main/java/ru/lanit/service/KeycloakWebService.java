@@ -34,6 +34,9 @@ public class KeycloakWebService {
             Map<String, String> cookies = response.cookies();
             String urlLoginForm = el.attr("action");
             log.debug("UrlLoginForm " + urlLoginForm);
+            cookies.forEach((key, value) -> {
+                log.debug(key + "=" + value);
+            });
             response = executeLogin(cookies, urlLoginForm);
             log.debug("Check keycloak call " + response.statusCode());
             log.debug("Count of cookies " + response.cookies().size());

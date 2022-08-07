@@ -1,13 +1,14 @@
 package ru.lanit.controller;
 
-import ru.lanit.configuration.KeycloakProperties;
-import ru.lanit.service.KeycloakWebService;
+import io.micrometer.core.instrument.util.StringUtils;
 import org.jsoup.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import ru.lanit.configuration.KeycloakProperties;
+import ru.lanit.service.KeycloakWebService;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,8 @@ public class KeycloakRegistrationController {
 
     /**
      * Основной метод регистрации в кейклоке
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      * @return emptypage - просто чтобы что-то было
      */
@@ -41,6 +43,7 @@ public class KeycloakRegistrationController {
 
     /**
      * Страница на которой будет ссылка на другой ресурс и iframe с URL для внутренней регистрации у нас это inner-registration
+     *
      * @return страницу
      */
     @RequestMapping(path = "/keycloak", method = RequestMethod.GET)
@@ -51,6 +54,7 @@ public class KeycloakRegistrationController {
     /**
      * Пустая страница на которую сделаем редирект после регистрации - она ничего не должна делать
      * Здесь можно почитать разные токкены и секьюрети ключи, если нужно
+     *
      * @return страницу
      */
     @RequestMapping(path = "/empty-page", method = RequestMethod.GET)
@@ -69,14 +73,27 @@ public class KeycloakRegistrationController {
                                  @RequestAttribute String password
 
     ) {
-        keycloakProperties.setKeycloakBaseUrl(baseUrl);
-        keycloakProperties.setKeycloakRealm(realm);
-        keycloakProperties.setKeycloakClientId(clientId);
-        keycloakProperties.setRedirectUri(redirectUrl);
-        keycloakProperties.setRedirectUri(redirectUrl);
-        keycloakProperties.setRootDomain(rootDomain);
-        keycloakProperties.setKeycloakUserName(userName);
-        keycloakProperties.setPassword(password);
+        if (StringUtils.isNotBlank(baseUrl)) {
+            keycloakProperties.setKeycloakBaseUrl(baseUrl);
+        }
+        if (StringUtils.isNotBlank(realm)) {
+            keycloakProperties.setKeycloakRealm(realm);
+        }
+        if (StringUtils.isNotBlank(clientId)) {
+            keycloakProperties.setKeycloakClientId(clientId);
+        }
+        if (StringUtils.isNotBlank(redirectUrl)) {
+            keycloakProperties.setRedirectUri(redirectUrl);
+        }
+        if (StringUtils.isNotBlank(rootDomain)) {
+            keycloakProperties.setRootDomain(rootDomain);
+        }
+        if (StringUtils.isNotBlank(userName)) {
+            keycloakProperties.setKeycloakUserName(userName);
+        }
+        if (StringUtils.isNotBlank(password)) {
+            keycloakProperties.setPassword(password);
+        }
         return "emptypage";
     }
 
