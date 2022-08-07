@@ -68,10 +68,6 @@ public class KeycloakWebService {
             loginForm = connection.execute();
         } catch (Exception exception) {
             log.error("Connection refused to: {}", url, exception);
-            log.debug("Check keycloak call {}", loginForm.statusCode());
-            log.debug("Body is {}", loginForm.body());
-
-
             try {
                 DefaultHttpClient httpclient = new DefaultHttpClient();
                 MyRedirectHandler handler = new MyRedirectHandler();
