@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.lanit.configuration.KeycloakProperties;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,19 +24,13 @@ public class KeycloakWebService {
 
     @SneakyThrows
     public Connection.Response keycloakReg() {
-        Connection connection = getAuthKeycloakForm();
-        Connection.Response response = connection.execute();
-        log.debug("Check keycloak call to " + response.url().toExternalForm() + ":" + response.statusCode());
+        Connection.Response response = getAuthKeycloakForm();
         Element el = response.parse().getElementById("kc-form-login");
         Map<String, String> cookies = response.cookies();
         String urlLoginForm = el.attr("action");
         log.debug("UrlLoginForm " + urlLoginForm);
-        final String[] cookiesStr = {""};
-        cookies.forEach((key, value) -> {
-            cookiesStr[0] += key + "=" + value + ",";
-        });
-        log.debug(cookiesStr[0]);
-        Connection.Response responseAuth =  executeLogin(cookies, urlLoginForm);
+        logDebugCookies(cookies);
+        Connection.Response responseAuth = executeLogin(cookies, urlLoginForm);
         return responseAuth;
     }
 
@@ -50,7 +43,7 @@ public class KeycloakWebService {
 //                aURL.getPath();
 //
 //        List<NameValuePair> params = URLEncodedUtils.parse(aURL, Charset.forName("UTF-8"));
-
+        log.debug("Try to connect: {}" + url);
         Connection connection = Jsoup.connect(url)
                 .ignoreHttpErrors(true)
                 .cookies(cookies)
@@ -68,9 +61,9 @@ public class KeycloakWebService {
             loginForm = connection.execute();
         } catch (Exception exception) {
             log.error("Connection refused to: {}", url, exception);
+            log.debug("Check keycloak call {}", loginForm.statusCode());
+            log.debug("Body is {}", loginForm.body());
         }
-        log.debug("Check keycloak call " + loginForm.statusCode());
-        log.debug("Body is " + loginForm.body());
         log.debug("Size of cookies " + loginForm.cookies().size());
         return loginForm;
     }
@@ -86,8 +79,10 @@ public class KeycloakWebService {
     }
 
     // Open auth keycloak form
-    private Connection getAuthKeycloakForm() {
+    private Connection.Response getAuthKeycloakForm() {
         Map headers = prepaireHeaderToLoginFormRequest();
+        log.debug("Try to connect: {}" + keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() +
+                keycloakProperties.getPathWithReplace());
         Connection connection =
                 Jsoup.connect(keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() + keycloakProperties.getPathWithReplace())
                         .data("response_type", keycloakProperties.getKeycloakResponseType())
@@ -99,6 +94,25 @@ public class KeycloakWebService {
                         .userAgent(DEFAULT_UA)
                         .method(Connection.Method.GET)
                         .headers(headers);
-        return connection;
+        Connection.Response response = null;
+        try {
+            response = connection.execute();
+        } catch (Exception exception) {
+            log.error("Connection refused to: {}", keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() +
+                    keycloakProperties.getPathWithReplace(), exception);
+            log.debug("Check keycloak call {}", response.statusCode());
+            log.debug("Body is {}", response.body());
+        }
+        return response;
+    }
+
+    private static void logDebugCookies(Map<String, String> cookies) {
+        if(log.isDebugEnabled()) {
+            final String[] cookiesStr = {""};
+            cookies.forEach((key, value) -> {
+                cookiesStr[0] += key + "=" + value + ",";
+            });
+            log.debug("Cookies is {}", cookiesStr[0]);
+        }
     }
 }
