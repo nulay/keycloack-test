@@ -26,30 +26,23 @@ public class KeycloakWebService {
     @SneakyThrows
     public Connection.Response keycloakReg() {
         Connection connection = getAuthKeycloakForm();
-        Connection.Response response = null;
-        try {
-            response = connection.execute();
-            log.debug("Check keycloak call to " + response.url().toExternalForm() + ":" + response.statusCode());
-            Element el = response.parse().getElementById("kc-form-login");
-            Map<String, String> cookies = response.cookies();
-            String urlLoginForm = el.attr("action");
-            log.debug("UrlLoginForm " + urlLoginForm);
-            final String[] cookiesStr = {""};
-            cookies.forEach((key, value) -> {
-                cookiesStr[0] += key + "=" + value + ",";
-            });
-            log.debug(cookiesStr[0]);
-            response = executeLogin(cookies, urlLoginForm);
-            log.debug("Check keycloak call " + response.statusCode());
-            log.debug("Count of cookies " + response.cookies().size());
-        } catch (IOException exception) {
-            log.error("Connection refused to: {}", response.url().getHost() +
-                            ((-1 != response.url().getPort()) ? ":" + response.url().getPort() : "") +
-                            response.url().getPath(),
-                    exception);
-            throw exception;
-        }
-        return response;
+        Connection.Response response = connection.execute();
+        log.debug("Check keycloak call to " + response.url().toExternalForm() + ":" + response.statusCode());
+        Element el = response.parse().getElementById("kc-form-login");
+        Map<String, String> cookies = response.cookies();
+        String urlLoginForm = el.attr("action");
+        log.debug("UrlLoginForm " + urlLoginForm);
+        final String[] cookiesStr = {""};
+        cookies.forEach((key, value) -> {
+            cookiesStr[0] += key + "=" + value + ",";
+        });
+        log.debug(cookiesStr[0]);
+        Connection.Response responseAuth = null;
+
+        responseAuth = executeLogin(cookies, urlLoginForm);
+
+
+        return responseAuth;
     }
 
     @SneakyThrows
@@ -80,6 +73,8 @@ public class KeycloakWebService {
         } catch (IOException exception) {
             log.error("Connection refused to: {}", url, exception);
         }
+        log.debug("Check keycloak call " + loginForm.statusCode());
+        log.debug("Size of cookies " + loginForm.cookies().size());
         return loginForm;
     }
 
@@ -95,6 +90,7 @@ public class KeycloakWebService {
 
     // Open auth keycloak form
     private Connection getAuthKeycloakForm() {
+        Map headers = prepaireHeaderToLoginFormRequest();
         Connection connection =
                 Jsoup.connect(keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() + keycloakProperties.getPathWithReplace())
                         .data("response_type", keycloakProperties.getKeycloakResponseType())
@@ -104,7 +100,8 @@ public class KeycloakWebService {
                         .data("login", keycloakProperties.getIsKeycloakLogin())
                         .data("scope", keycloakProperties.getKeycloakScope())
                         .userAgent(DEFAULT_UA)
-                        .method(Connection.Method.GET);
+                        .method(Connection.Method.GET)
+                        .headers(headers);
         return connection;
     }
 }
