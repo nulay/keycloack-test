@@ -89,7 +89,9 @@ public class KeycloakWebService {
                 log.debug("lastUrl {}", lastUrl);
             } catch (IOException e) {
                 log.error("DefaultHttpClient error ", exception);
+                throw exception;
             }
+            throw exception;
         }
         log.debug("Size of cookies {}", loginForm.cookies().size());
         return loginForm;

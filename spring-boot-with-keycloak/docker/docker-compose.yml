@@ -5,6 +5,7 @@ services:
     image: keycloak-inner:latest
     ports:
       - "9090:9090"
+      - "8888:8888"
     extra_hosts:
       - "keycloak.lanit.ru:172.29.16.185"
       - "registration.lanit.ru:127.0.0.1"
