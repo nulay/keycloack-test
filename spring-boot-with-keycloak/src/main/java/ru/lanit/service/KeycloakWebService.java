@@ -52,6 +52,7 @@ public class KeycloakWebService {
 //        List<NameValuePair> params = URLEncodedUtils.parse(aURL, Charset.forName("UTF-8"));
         log.debug("Try to connect: {}", url);
         Connection connection = Jsoup.connect(url)
+                .proxy("localhost", 8888)
                 .cookies(cookies)
                 .data("credentialId", "")
                 .data("username", keycloakProperties.getKeycloakUserName())
@@ -78,6 +79,7 @@ public class KeycloakWebService {
 
                 HttpPost post = new HttpPost(url);
                 headers.forEach((key, value) -> post.addHeader(new BasicHeader(key, value)));
+                log.debug("Start execute httpclient: {}");
                 httpclient.execute(post);
 
                 String lastUrl = url;
@@ -86,7 +88,7 @@ public class KeycloakWebService {
                 }
                 log.debug("lastUrl {}", lastUrl);
             } catch (IOException e) {
-                log.error("2 error ", exception);
+                log.error("DefaultHttpClient error ", exception);
             }
         }
         log.debug("Size of cookies {}", loginForm.cookies().size());
