@@ -28,9 +28,9 @@ public class KeycloakWebService {
         Element el = response.parse().getElementById("kc-form-login");
         Map<String, String> cookies = response.cookies();
         String urlLoginForm = el.attr("action");
-        log.debug("UrlLoginForm " + urlLoginForm);
         logDebugCookies(cookies);
         Connection.Response responseAuth = executeLogin(cookies, urlLoginForm);
+        logDebugCookies(responseAuth.cookies());
         return responseAuth;
     }
 
@@ -43,9 +43,8 @@ public class KeycloakWebService {
 //                aURL.getPath();
 //
 //        List<NameValuePair> params = URLEncodedUtils.parse(aURL, Charset.forName("UTF-8"));
-        log.debug("Try to connect: {}" + url);
+        log.debug("Try to connect: {}", url);
         Connection connection = Jsoup.connect(url)
-                .ignoreHttpErrors(true)
                 .cookies(cookies)
                 .data("credentialId", "")
                 .data("username", keycloakProperties.getKeycloakUserName())
@@ -58,13 +57,14 @@ public class KeycloakWebService {
 //        }
         Connection.Response loginForm = null;
         try {
+            log.debug("Try to execute");
             loginForm = connection.execute();
         } catch (Exception exception) {
             log.error("Connection refused to: {}", url, exception);
             log.debug("Check keycloak call {}", loginForm.statusCode());
             log.debug("Body is {}", loginForm.body());
         }
-        log.debug("Size of cookies " + loginForm.cookies().size());
+        log.debug("Size of cookies {}", loginForm.cookies().size());
         return loginForm;
     }
 
