@@ -29,7 +29,7 @@ public class KeycloakWebService {
         Connection.Response response = null;
         try {
             response = connection.execute();
-            log.debug("Check keycloak call " + response.statusCode());
+            log.debug("Check keycloak call to " + response.url().toExternalForm() + ":" + response.statusCode());
             Element el = response.parse().getElementById("kc-form-login");
             Map<String, String> cookies = response.cookies();
             String urlLoginForm = el.attr("action");
