@@ -45,7 +45,7 @@ public class KeycloakWebService {
 //
 //        List<NameValuePair> params = URLEncodedUtils.parse(aURL, Charset.forName("UTF-8"));
         log.debug("Try to connect: {}", url);
-        Connection connection = Jsoup.connect(URLEncoder.encode(url, "UTF-8"))
+        Connection connection = Jsoup.connect(url)
                 .cookies(cookies)
                 .data("credentialId", "")
                 .data("username", keycloakProperties.getKeycloakUserName())
@@ -80,6 +80,7 @@ public class KeycloakWebService {
     }
 
     // Open auth keycloak form
+    @SneakyThrows
     private Connection.Response getAuthKeycloakForm() {
         Map headers = prepaireHeaderToLoginFormRequest();
         log.debug("Try to connect: {}" + keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() +
@@ -88,7 +89,7 @@ public class KeycloakWebService {
                 Jsoup.connect(keycloakProperties.getKeycloakScheme() + keycloakProperties.getKeycloakBaseUrl() + keycloakProperties.getPathWithReplace())
                         .data("response_type", keycloakProperties.getKeycloakResponseType())
                         .data("client_id", keycloakProperties.getKeycloakClientId())
-                        .data("redirect_uri", keycloakProperties.getRedirectUri())
+                        .data("redirect_uri", URLEncoder.encode(keycloakProperties.getRedirectUri(), "UTF-8"))
                         .data("state", keycloakProperties.getKeycloakState())
                         .data("login", keycloakProperties.getIsKeycloakLogin())
                         .data("scope", keycloakProperties.getKeycloakScope())
