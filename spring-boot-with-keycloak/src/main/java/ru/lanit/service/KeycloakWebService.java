@@ -53,7 +53,7 @@ public class KeycloakWebService {
                 .data("password", keycloakProperties.getPassword())
                 .userAgent(DEFAULT_UA)
                 .method(Connection.Method.POST)
-                .followRedirects(true)
+                .followRedirects(false)
                 .headers(headers);
 //        for (NameValuePair param : params) {
 //            connection = connection.data(param.getName(), param.getValue());
