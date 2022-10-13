@@ -1,6 +1,7 @@
 package ru.lanit.controller;
 
 import io.micrometer.core.instrument.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Connection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +15,11 @@ import ru.lanit.service.KeycloakWebService;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
+@Slf4j
 public class KeycloakRegistrationController {
 
     @Autowired
@@ -23,6 +27,59 @@ public class KeycloakRegistrationController {
 
     @Autowired
     KeycloakWebService keycloakWebService;
+
+    @RequestMapping(path = "/lanit-fake-reg", method = RequestMethod.GET)
+    public String lanitFakeCook(HttpServletRequest request, HttpServletResponse response) {
+        response.addCookie(new Cookie("sso_session_key", "lanit-fake-reg"));
+        return "index";
+    }
+
+    @RequestMapping(path = "/lanit-remove-fake-reg", method = RequestMethod.GET)
+    public String lanitRemoveFakeCook(HttpServletRequest request, HttpServletResponse response) {
+        List<Cookie> cookies = request.getCookies() != null ? List.of(request.getCookies()) : List.of();
+
+        Optional<Cookie> cookie = cookies.stream()
+                .filter(cookie1 -> cookie1.getName().equals("sso_session_key"))
+                .findFirst();
+        if(cookie.isPresent()){
+            cookie.get().setMaxAge(0);
+        }
+        return "index";
+    }
+
+    @RequestMapping(path = "/44fz-to-visiology2", method = RequestMethod.GET)
+    public String goFrom44fzToVisiology2(HttpServletRequest request, HttpServletResponse response) {
+        log.debug("We got auth from hazelcast");
+
+        return "inner-reg";
+    }
+
+    @RequestMapping(path = "/44fz-to-visiology", method = RequestMethod.GET)
+    public String goFrom44fzToVisiology(HttpServletRequest request, HttpServletResponse response) {
+        List<Cookie> cookies = request.getCookies() != null ? List.of(request.getCookies()) : List.of();
+        cookies.forEach(e -> log.debug("Find next cookie : {}", e.getName()));
+        Optional<Cookie> cookie = cookies.stream()
+                .filter(cookie1 -> cookie1.getName().equals("sso_session_key"))
+                .findFirst();
+
+        if (cookie.isEmpty()) {
+            return "redirect:" + "https://eis3.lanit.ru";
+        }
+        return "redirect:" + "/inner-registration";
+    }
+
+    @RequestMapping(path = "/223-to-visiology", method = RequestMethod.GET)
+    public String goFrom223ToVisiology(HttpServletRequest request, HttpServletResponse response) {
+        List<Cookie> cookies = request.getCookies() != null ? List.of(request.getCookies()) : List.of();
+        Optional<Cookie> cookie = cookies.stream()
+                .filter(cookie1 -> cookie1.getName().equals("sso_session_key"))
+                .findFirst();
+        if (cookie.isEmpty()) {
+            return "redirect:" + "https://eis3.lanit.ru";
+        }
+        return "redirect:" + "/inner-registration";
+    }
+
 
     /**
      * Основной метод регистрации в кейклоке
@@ -47,7 +104,9 @@ public class KeycloakRegistrationController {
                 cookie.setPath("/");
                 response.addCookie(cookie);
             });
-            return "emptypage";
+            log.debug("All cookies installed to {}", keycloakProperties.getRootDomain());
+            return "redirect:" + "http://195.26.187.247/";
+//            return "emptypage";
         } else {
             return "error";
         }
@@ -71,6 +130,7 @@ public class KeycloakRegistrationController {
      */
     @RequestMapping(path = "/empty-page", method = RequestMethod.GET)
     public String emptyPage(HttpServletRequest request, HttpServletResponse response) {
+        log.debug("We are on sso-success");
         return "emptypage";
     }
 
@@ -106,7 +166,7 @@ public class KeycloakRegistrationController {
         if (StringUtils.isNotBlank(password)) {
             keycloakProperties.setPassword(password);
         }
-        return "emptypage";
+        return "ssosuccess";
     }
 
 }
