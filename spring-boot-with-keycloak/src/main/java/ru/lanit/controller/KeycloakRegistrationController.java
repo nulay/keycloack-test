@@ -44,6 +44,7 @@ public class KeycloakRegistrationController {
             response1.cookies().forEach((key, val) -> {
                 Cookie cookie = new Cookie(key, val);
                 cookie.setDomain(keycloakProperties.getRootDomain());
+                cookie.setPath("/");
                 response.addCookie(cookie);
             });
             return "emptypage";
