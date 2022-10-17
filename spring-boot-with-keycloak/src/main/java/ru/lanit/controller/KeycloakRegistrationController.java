@@ -30,7 +30,9 @@ public class KeycloakRegistrationController {
 
     @RequestMapping(path = "/lanit-fake-reg", method = RequestMethod.GET)
     public String lanitFakeCook(HttpServletRequest request, HttpServletResponse response) {
-        response.addCookie(new Cookie("sso_session_key", "lanit-fake-reg"));
+        Cookie cookie = new Cookie("sso_session_key", "lanit-fake-reg");
+        cookie.setMaxAge(100000);
+        response.addCookie(cookie);
         return "index";
     }
 
@@ -62,7 +64,7 @@ public class KeycloakRegistrationController {
                 .filter(cookie1 -> cookie1.getName().equals("sso_session_key"))
                 .findFirst();
 
-        if (cookie.isEmpty()) {
+        if (cookie.isEmpty() || cookie.get().getMaxAge() == 0) {
             return "redirect:" + "https://eis3.lanit.ru";
         }
         return "redirect:" + "/inner-registration";
@@ -168,5 +170,4 @@ public class KeycloakRegistrationController {
         }
         return "ssosuccess";
     }
-
 }
