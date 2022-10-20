@@ -44,7 +44,9 @@ public class KeycloakRegistrationController {
                 .filter(cookie1 -> cookie1.getName().equals("sso_session_key"))
                 .findFirst();
         if(cookie.isPresent()){
-            cookie.get().setMaxAge(0);
+            Cookie modifiedCookie = cookie.get();
+            modifiedCookie.setMaxAge(0);
+            response.addCookie(modifiedCookie);
         }
         return "index";
     }
